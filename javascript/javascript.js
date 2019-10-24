@@ -42,6 +42,11 @@ $("#submit-button").on("click", function(event){
 
     });
 
+    $("#name-input").val("");
+    $("#destination-input").val("");
+    $("#time-input").val("");
+    $("#frequency-input").val("");
+
     console.log();
 });
 
