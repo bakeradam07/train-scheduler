@@ -1,13 +1,90 @@
 var config = {
-    apiKey: "AIzaSyBio12_wRkOWn0XKnYkAwhemj22LVLAcZY",
-    authDomain: "oct-12-test.firebaseapp.com",
-    databaseURL: "https://oct-12-test.firebaseio.com",
-    projectId: "oct-12-test",
-    storageBucket: "oct-12-test.appspot.com",
-    messagingSenderId: "1058452132622",
-    appId: "1:1058452132622:web:6914b05dd6ff8277c2bd5f"
+    apiKey: "AIzaSyCH6glNgntRPryK8O7RGbaKJfOLCJKPHqM",
+    authDomain: "train-scheduler-cbb84.firebaseapp.com",
+    databaseURL: "https://train-scheduler-cbb84.firebaseio.com",
+    projectId: "train-scheduler-cbb84",
+    storageBucket: "train-scheduler-cbb84.appspot.com",
+    messagingSenderId: "261139447095",
+    appId: "1:261139447095:web:71ca842805273f7e2f2eb2"
   };
 
 firebase.initializeApp(config);
 
 var database = firebase.database();
+
+var name;
+var destination;
+
+var frequency;
+
+// console.log("Current Time: " + currentTime);
+
+$("#submit-button").on("click", function(event){
+    event.preventDefault();
+
+
+    name = $("#name-input").val().trim();
+    destination = $("#destination-input").val().trim();
+    time = moment($("#time-input").val().trim(), "HH:mm").format("HH:mm");
+    frequency = $("#frequency-input").val().trim();
+
+
+
+
+    database.ref().push({
+        name: name,
+        destination: destination,
+        time: time,
+        frequency: frequency,
+        // dateAdded: firebase.database.ServerValue.TIMESTAMP
+
+        
+
+    });
+
+    console.log();
+});
+
+//the above code works
+
+database.ref().on("child_added", function(snapshot){
+    var sv = snapshot.val();
+
+    console.log(sv.name);
+    console.log(sv.destination);
+    console.log(sv.time);
+    console.log(sv.frequency);
+
+    var firstTimeConverted = moment(sv.time, "HH:mm").subtract(1, "years");
+    console.log(firstTimeConverted);
+
+    var currentTime = moment();
+    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+    var tRemainder = diffTime % sv.frequency;
+    console.log(tRemainder);
+
+    var tMinutesTillTrain = sv.frequency - tRemainder;
+    console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes").format("hh:mm");
+    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+
+
+    $(".table").append("<tr><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" +
+    sv.frequency + "</td><td>" + nextTrain + "</td><td>" + tMinutesTillTrain + "</td></tr>");
+
+
+}, function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+    });
+
+
+
+
+
+
