@@ -17,7 +17,7 @@ var destination;
 
 var frequency;
 
-// console.log("Current Time: " + currentTime);
+
 
 $("#submit-button").on("click", function(event){
     event.preventDefault();
@@ -36,7 +36,7 @@ $("#submit-button").on("click", function(event){
         destination: destination,
         time: time,
         frequency: frequency,
-        // dateAdded: firebase.database.ServerValue.TIMESTAMP
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
 
         
 
@@ -61,22 +61,22 @@ database.ref().on("child_added", function(snapshot){
     console.log(sv.frequency);
 
     var firstTimeConverted = moment(sv.time, "HH:mm").subtract(1, "years");
-    console.log(firstTimeConverted);
+    
 
     var currentTime = moment();
-    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+    
 
     var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
-    console.log("DIFFERENCE IN TIME: " + diffTime);
+    
 
     var tRemainder = diffTime % sv.frequency;
-    console.log(tRemainder);
+    
 
     var tMinutesTillTrain = sv.frequency - tRemainder;
-    console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+   
 
     var nextTrain = moment().add(tMinutesTillTrain, "minutes").format("hh:mm");
-    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+    
 
 
 
